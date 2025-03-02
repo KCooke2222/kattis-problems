@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# QuickSort function
+quick_sort() {
+    local arr=("$@")  # Create a local array from the arguments
+    local n=${#arr[@]} # Get the size of the array
+
+    # Base case: if the array has one or zero elements, it's already sorted
+    if ((n <= 1)); then
+        echo "${arr[@]}"
+        return
+    fi
+
+    # Choose pivot (the last element in the array)
+    local pivot=${arr[n-1]}
+    local left=()
+    local right=()
+
+    # Partition the array into two subarrays: left (<= pivot) and right (> pivot)
+    for ((i = 0; i < n-1; i++)); do
+        if ((arr[i] <= pivot)); then
+            left+=("${arr[i]}")
+        else
+            right+=("${arr[i]}")
+        fi
+    done
+
+    # Recursively sort the left and right subarrays
+    local sorted_left=($(quick_sort "${left[@]}"))
+    local sorted_right=($(quick_sort "${right[@]}"))
+
+    # Combine sorted left, pivot, and sorted right
+    echo "${sorted_left[@]}" "$pivot" "${sorted_right[@]}"
+}
+
+# Get input
+read n d
+
+# Array
+notes=()
+for ((i=0; i<n; i++)); do
+    read note
+    notes+=("$note")
+done
+
+# Sort array
+notes=($(quick_sort "${input[@]}"))
+
+# Go through array in segments of the note range
+diff=0
+recordings=1
+for ((i=0; i<n-1; i++)); do
+    (( diff += notes[i+1] - notes[i] ))
+    if (( diff > d )); then
+        (( recordings++ ))
+        diff=0
+    fi
+done
+
+echo $recordings

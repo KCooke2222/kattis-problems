@@ -1,5 +1,3 @@
 {
-    "files.associations": {
-        "Öfugsnúið.C": "cpp"
-    }
+    "debug.inlineValues": "on",
 }
